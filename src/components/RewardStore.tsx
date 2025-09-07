@@ -1,27 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Gift, Plane, Hotel, MapPin, ShoppingCart } from "lucide-react";
+import { Coins, Gift, Plane, MapPin, History, ShoppingCart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import RedemptionHistory from './RedemptionHistory';
+
+type StoreItemCategory = 'gift_card' | 'travel_discount' | 'experience';
 
 interface StoreItem {
   id: string;
   title: string;
   description: string;
-  category: string;
+  category: StoreItemCategory;
   cost_coins: number;
   image_url?: string;
   provider?: string;
   metadata: any;
   is_active: boolean;
   stock_quantity?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface UserCoins {
   available_coins: number;
+  lifetime_earned: number;
+  total_redeemed: number;
+  total_coins?: number;
+  user_id?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 const RewardStore: React.FC = () => {
@@ -30,6 +41,7 @@ const RewardStore: React.FC = () => {
   const [userCoins, setUserCoins] = useState<UserCoins | null>(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [showRedemptions, setShowRedemptions] = useState(false);
 
   const categoryIcons = {
     gift_card: Gift,
@@ -50,6 +62,8 @@ const RewardStore: React.FC = () => {
   }, [user]);
 
   const loadData = async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
 
@@ -62,19 +76,97 @@ const RewardStore: React.FC = () => {
 
       if (itemsError) throw itemsError;
 
-      // Load user coins
+      // Ensure items have the correct category type
+      const typedItems = (itemsData || []).map(item => ({
+        ...item,
+        category: item.category as StoreItemCategory
+      }));
+
+      // Load user coins with all required fields
       const { data: coinsData, error: coinsError } = await supabase
         .from('user_coins')
-        .select('available_coins')
-        .eq('user_id', user?.id)
+        .select('*')
+        .eq('user_id', user.id)
         .single();
 
-      if (coinsError && coinsError.code !== 'PGRST116') {
-        throw coinsError;
+      // Calculate total redeemed coins from purchases
+      const { data: redeemedData } = await supabase
+        .from('user_purchases')
+        .select('coins_spent')
+        .eq('user_id', user.id);
+      
+      const totalRedeemed = (redeemedData || []).reduce((sum, item) => sum + (item.coins_spent || 0), 0);
+      
+      let userCoins: UserCoins;
+      
+      if (coinsError || !coinsData) {
+        // Create new user coins record if it doesn't exist
+        userCoins = { 
+          available_coins: 0, 
+          lifetime_earned: 0, 
+          total_redeemed: totalRedeemed,
+          total_coins: 0,
+          user_id: user.id,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        // Save the new user coins record
+        const { data: insertedCoins, error: insertError } = await supabase
+          .from('user_coins')
+          .insert([{
+            user_id: user.id,
+            available_coins: 0,
+            lifetime_earned: 0,
+            total_redeemed: totalRedeemed,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }])
+          .select()
+          .single();
+          
+        if (insertError) {
+          console.error('Error creating user coins:', insertError);
+        } else if (insertedCoins) {
+          userCoins = insertedCoins as UserCoins;
+        }
+      } else {
+        // Use existing coins data with fallbacks
+        userCoins = {
+          ...coinsData,
+          available_coins: coinsData.available_coins ?? 0,
+          lifetime_earned: coinsData.lifetime_earned ?? 0,
+          // Handle case where total_redeemed might not exist in the database
+          total_redeemed: 'total_redeemed' in coinsData 
+            ? (coinsData as any).total_redeemed 
+            : totalRedeemed,
+          total_coins: coinsData.total_coins ?? 0,
+          user_id: coinsData.user_id || user.id
+        };
+        
+        // Update available coins if needed
+        const calculatedAvailable = Math.max(0, userCoins.lifetime_earned - userCoins.total_redeemed);
+        if (userCoins.available_coins !== calculatedAvailable) {
+          userCoins.available_coins = calculatedAvailable;
+          
+          // Save the updated coins
+          const { error: updateError } = await supabase
+            .from('user_coins')
+            .update({
+              available_coins: userCoins.available_coins,
+              total_redeemed: userCoins.total_redeemed,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', user.id);
+            
+          if (updateError) {
+            console.error('Error updating user coins:', updateError);
+          }
+        }
       }
-
-      setItems(itemsData || []);
-      setUserCoins(coinsData || { available_coins: 0 });
+      
+      setItems(typedItems);
+      setUserCoins(userCoins);
     } catch (error) {
       console.error('Error loading store data:', error);
       toast.error('Failed to load store items');
@@ -84,103 +176,131 @@ const RewardStore: React.FC = () => {
   };
 
   const purchaseItem = async (item: StoreItem) => {
-    if (!userCoins || userCoins.available_coins < item.cost_coins) {
-      toast.error('Insufficient coins for this purchase');
+    if (!user || !userCoins) {
+      toast.error('You must be logged in to make a purchase');
       return;
     }
 
+    setPurchasing(item.id);
+
     try {
-      setPurchasing(item.id);
+      // Check if user has enough coins
+      if (userCoins.available_coins < item.cost_coins) {
+        toast.error('Not enough coins to make this purchase');
+        return;
+      }
 
       // Create purchase record
       const { data: purchase, error: purchaseError } = await supabase
         .from('user_purchases')
         .insert({
-          user_id: user?.id,
+          user_id: user.id,
           store_item_id: item.id,
           coins_spent: item.cost_coins,
+          status: 'completed',
           purchase_details: {
             item_title: item.title,
-            provider: item.provider,
-            metadata: item.metadata
+            provider: item.provider || '',
+            metadata: item.metadata || {},
+            redemption_code: generateRedemptionCode()
           }
-        })
-        .select()
-        .single();
+        });
 
       if (purchaseError) throw purchaseError;
 
-      // Deduct coins from user balance
+      // Update user's coin balance
+      const updatedCoins = {
+        ...userCoins,
+        available_coins: userCoins.available_coins - item.cost_coins,
+        total_redeemed: (userCoins.total_redeemed || 0) + item.cost_coins
+      };
+
       const { error: coinsError } = await supabase
         .from('user_coins')
         .update({
-          available_coins: userCoins.available_coins - item.cost_coins,
-          total_coins: userCoins.available_coins - item.cost_coins
+          available_coins: updatedCoins.available_coins,
+          total_redeemed: updatedCoins.total_redeemed,
+          updated_at: new Date().toISOString()
         })
-        .eq('user_id', user?.id);
+        .eq('user_id', user.id);
 
       if (coinsError) throw coinsError;
 
+      // Update local state
+      setUserCoins(updatedCoins);
+      
+      // Show success message
       toast.success(`Successfully purchased ${item.title}!`);
       
-      // Show redemption details
-      if (item.category === 'gift_card') {
-        toast.info(`Redemption code: ${generateRedemptionCode()}`);
-      } else if (item.category === 'travel_discount') {
-        toast.info('Discount code will be sent to your email');
-      }
-
-      loadData(); // Refresh data
+      // Refresh data to ensure consistency
+      loadData();
+      
     } catch (error) {
-      console.error('Error purchasing item:', error);
-      toast.error('Failed to complete purchase');
+      console.error('Error processing purchase:', error);
+      toast.error('Failed to process purchase');
     } finally {
       setPurchasing(null);
     }
   };
 
-  const generateRedemptionCode = () => {
-    return 'TRIP' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  const generateRedemptionCode = (): string => {
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
   };
 
-  const canAfford = (cost: number) => {
-    return userCoins && userCoins.available_coins >= cost;
+  const canAfford = (cost: number): boolean => {
+    return userCoins ? userCoins.available_coins >= cost : false;
   };
 
-  const getItemsByCategory = (category: string) => {
+  const getItemsByCategory = (category: StoreItemCategory): StoreItem[] => {
     return items.filter(item => item.category === category);
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading rewards...</p>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <div className="h-48 bg-muted/50 rounded-t-lg" />
+              <CardHeader>
+                <div className="h-6 w-3/4 bg-muted/50 rounded" />
+                <div className="h-4 w-1/2 bg-muted/50 rounded mt-2" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-4 w-full bg-muted/50 rounded mb-4" />
+                <div className="h-4 w-3/4 bg-muted/50 rounded" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     );
   }
 
+  if (showRedemptions) {
+    return <RedemptionHistory onBack={() => setShowRedemptions(false)} />;
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Header with balance */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Reward Store</h1>
-          <p className="text-muted-foreground">Redeem your TrippEy Coins for amazing rewards!</p>
-        </div>
-        <Card className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-yellow-500/20">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Coins className="h-6 w-6 text-yellow-500" />
-              <div>
-                <p className="text-sm text-muted-foreground">Available Coins</p>
-                <p className="text-xl font-bold text-yellow-600">{userCoins?.available_coins || 0}</p>
-              </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <h1 className="text-3xl font-bold">Reward Store</h1>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="w-full sm:w-auto justify-center gap-2"
+            onClick={() => setShowRedemptions(true)}
+          >
+            <History className="h-4 w-4" />
+            View Redemptions
+          </Button>
+          <div className="flex items-center bg-primary/10 px-4 py-2 rounded-full justify-between">
+            <div className="flex items-center">
+              <Coins className="h-5 w-5 text-yellow-500 mr-2" />
+              <span className="font-medium">{userCoins?.available_coins || 0} Points</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Store sections */}

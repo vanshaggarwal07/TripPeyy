@@ -164,6 +164,7 @@ export default function Dashboard() {
       title: 'Signed out',
       description: 'You have been successfully signed out.',
     });
+    window.location.href = '/';
   };
 
   const totalBudget = trips.reduce((sum, trip) => sum + (trip.budget_limit || 0), 0);
