@@ -1,32 +1,55 @@
 <div align="center">
   
   # 🚀 TripPey
-  
   <h3 align="center">✈️ Your Ultimate Travel Companion ✈️</h3>
-  
+
+  <!-- Animated badges -->
   <p align="center">
-    <img src="https://img.shields.io/badge/Version-1.0.0-success" alt="Version">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
-    <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome">
+    <img src="https://img.shields.io/badge/dynamic/json?label=Version&query=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Fvanshaggarwal07%2FTripPeyy%2Fmain%2Fpackage.json&color=success&style=flat-square" alt="Version">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License">
+    <img src="https://img.shields.io/github/last-commit/vanshaggarwal07/TripPeyy?style=flat-square" alt="Last Commit">
   </p>
-  
-  [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-4.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![Vite](https://img.shields.io/badge/Vite-4.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  
-  <br/>
-  
-  <div align="center">
-    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="TripPey Banner" width="100%" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-  </div>
-  
-  <br/>
-  
-  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-  
-  ![TripPeyy Banner](https://via.placeholder.com/1200x400/1e40af/ffffff?text=TripPeyy+Travel+Companion)
+
+  <!-- Tech stack with icons -->
+  <p align="center">
+    <a href="https://reactjs.org/">
+      <img src="https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=white&style=for-the-badge" alt="React">
+    </a>
+    <a href="https://www.typescriptlang.org/">
+      <img src="https://img.shields.io/badge/TypeScript-4.9-3178C6?logo=typescript&logoColor=white&style=for-the-badge" alt="TypeScript">
+    </a>
+    <a href="https://vitejs.dev/">
+      <img src="https://img.shields.io/badge/Vite-4.0-646CFF?logo=vite&logoColor=white&style=for-the-badge" alt="Vite">
+    </a>
+  </p>
+
+  <!-- Animated typing text -->
+  <p align="center">
+    <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=1E40AF&center=true&vCenter=true&width=435&lines=Explore+the+World+with+Confidence;Your+Journey+Begins+Here;Travel+Made+Easy;Adventure+Awaits+%F0%9F%9A%80" alt="Typing SVG" />
+  </p>
+
+  <!-- GitHub Stats Card -->
+  <p align="center">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=vanshaggarwal07&repo=TripPeyy&theme=radical" alt="GitHub Stats">
+  </p>
+
+  <!-- Deploy buttons -->
+  <p align="center">
+    <a href="https://vercel.com/new">
+      <img src="https://vercel.com/button" alt="Deploy with Vercel">
+    </a>
+    <a href="https://github.com/vanshaggarwal07/TripPeyy/fork">
+      <img src="https://img.shields.io/github/forks/vanshaggarwal07/TripPeyy?style=social" alt="Fork">
+    </a>
+    <a href="https://github.com/vanshaggarwal07/TripPeyy/stargazers">
+      <img src="https://img.shields.io/github/stars/vanshaggarwal07/TripPeyy?style=social" alt="Stars">
+    </a>
+  </p>
+
+  <!-- Visitors counter -->
+  <p align="center">
+    <img src="https://komarev.com/ghpvc/?username=vanshaggarwal07&label=Profile%20views&color=0e75b6&style=flat" alt="vanshaggarwal07" />
+  </p>
 </div>
 
 ## 🚀 Features
