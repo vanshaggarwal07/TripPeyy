@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TripPey Travel Platform Design System - Cultural & Travel Inspired */
+
+@layer base {
+  :root {
+    /* Travel-inspired color palette */
+    --background: 28 20% 98%;
+    --foreground: 24 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 24 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 10% 8%;
+
+    /* Primary: Deep Ocean Blue - represents adventure */
+    --primary: 200 95% 35%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 200 85% 45%;
+
+    /* Secondary: Warm Sunset Orange */
+    --secondary: 25 95% 65%;
+    --secondary-foreground: 24 10% 8%;
+    
+    /* Accent: Cultural Gold */
+    --accent: 45 85% 55%;
+    --accent-foreground: 24 10% 8%;
+    
+    /* Muted: Soft Travel Beige */
+    --muted: 30 15% 92%;
+    --muted-foreground: 24 10% 45%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 20% 88%;
+    --input: 30 20% 88%;
+    --ring: 200 95% 35%;
+
+    /* Travel-specific colors */
+    --cultural: 280 75% 45%;
+    --cultural-foreground: 0 0% 98%;
+    --success: 120 65% 40%;
+    --success-foreground: 0 0% 98%;
+    --warning: 35 85% 50%;
+    --warning-foreground: 0 0% 98%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(200 95% 35%) 0%, hsl(25 95% 65%) 100%);
+    --gradient-cultural: linear-gradient(135deg, hsl(280 75% 45%) 0%, hsl(45 85% 55%) 100%);
+    --gradient-sunset: linear-gradient(180deg, hsl(25 95% 65%) 0%, hsl(15 85% 55%) 100%);
+    --gradient-ocean: linear-gradient(180deg, hsl(200 95% 35%) 0%, hsl(220 85% 25%) 100%);
+    
+    /* Shadows */
+    --shadow-travel: 0 10px 30px -5px hsl(200 95% 35% / 0.3);
+    --shadow-cultural: 0 8px 25px -8px hsl(280 75% 45% / 0.4);
+    --shadow-warm: 0 8px 25px -8px hsl(25 95% 65% / 0.3);
+    --shadow-elevation: 0 4px 20px -4px hsl(24 10% 8% / 0.1);
+
+    --radius: 0.75rem;
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    /* Travel-inspired dark mode palette */
+    --background: 24 10% 8%;
+    --foreground: 28 20% 98%;
+
+    --card: 24 10% 10%;
+    --card-foreground: 28 20% 98%;
+
+    --popover: 24 10% 10%;
+    --popover-foreground: 28 20% 98%;
+
+    --primary: 200 85% 45%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 200 75% 55%;
+
+    --secondary: 25 85% 55%;
+    --secondary-foreground: 24 10% 8%;
+    
+    --accent: 45 75% 45%;
+    --accent-foreground: 0 0% 98%;
+    
+    --muted: 24 10% 15%;
+    --muted-foreground: 28 15% 65%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 24 10% 18%;
+    --input: 24 10% 18%;
+    --ring: 200 85% 45%;
+
+    --cultural: 280 65% 35%;
+    --cultural-foreground: 0 0% 98%;
+    --success: 120 55% 30%;
+    --success-foreground: 0 0% 98%;
+    --warning: 35 75% 40%;
+    --warning-foreground: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
