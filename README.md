@@ -1,12 +1,27 @@
 <div align="center">
-  <h1>✨ TripPey ✨</h1>
-  <p>Your Ultimate Travel Companion Application</p>
   
-  ![License](https://img.shields.io/badge/License-MIT-blue.svg)
-  ![Version](https://img.shields.io/badge/version-1.0.0-success)
-  ![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)
-  ![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-3178C6?logo=typescript)
-  ![Vite](https://img.shields.io/badge/Vite-4.0.0-646CFF?logo=vite)
+  # 🚀 TripPey
+  
+  <h3 align="center">✈️ Your Ultimate Travel Companion ✈️</h3>
+  
+  <p align="center">
+    <img src="https://img.shields.io/badge/Version-1.0.0-success" alt="Version">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+    <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome">
+  </p>
+  
+  [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-4.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-4.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  
+  <br/>
+  
+  <div align="center">
+    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="TripPey Banner" width="100%" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  
+  <br/>
   
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
   [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
@@ -116,5 +131,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  Made with ❤️ by Your Vansh Aggarwal |  [GitHub](https://github.com/vanshaggarwal07)
+  Made with ❤️ by Vansh Aggarwal
 </div>
